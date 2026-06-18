@@ -4,6 +4,7 @@
   "description": "Safe, stateful database access layer for VS Code / Cursor Copilot",
   "version": "0.1.0",
   "publisher": "bollard",
+  "icon": "icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/Bollard-db/Bollard.git"
