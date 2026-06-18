@@ -2,7 +2,7 @@
   "name": "bollard-mcp-vscode",
   "displayName": "Bollard Database MCP",
   "description": "Safe, stateful database access layer for VS Code / Cursor Copilot",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "bollard",
   "icon": "icon.png",
   "repository": {
