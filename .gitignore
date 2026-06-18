@@ -55,8 +55,7 @@ desktop.ini
 *.key
 *.pem
 
-# Documentation Website
-docs/
+
 
 # Examples
 examples/
