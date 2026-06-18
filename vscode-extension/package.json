@@ -1,0 +1,58 @@
+{
+  "name": "bollard-mcp-vscode",
+  "displayName": "Bollard Database MCP",
+  "description": "Safe, stateful database access layer for VS Code / Cursor Copilot",
+  "version": "0.1.0",
+  "publisher": "bollard",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bollard-db/Bollard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Bollard-db/Bollard/issues"
+  },
+  "homepage": "https://bollard.pavak.me/docs",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "mcpServerDefinitionProviders": [
+      {
+        "id": "bollard.mcpServerProvider",
+        "label": "Bollard Database MCP Server"
+      }
+    ],
+    "configuration": {
+      "title": "Bollard MCP",
+      "properties": {
+        "bollard.mcpServer.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to register the Bollard MCP server with the editor."
+        },
+        "bollard.mcpServer.pythonPath": {
+          "type": "string",
+          "default": "",
+          "description": "Custom absolute path to the Python executable. If left empty, it will auto-detect the `.venv` directory in your open workspace."
+        },
+        "bollard.mcpServer.defaultMaxRows": {
+          "type": "integer",
+          "default": 1000,
+          "description": "Default maximum rows returned by SELECT queries (Auto-LIMIT)."
+        },
+        "bollard.mcpServer.debug": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable debug logging for the Bollard MCP server."
+        }
+      }
+    }
+  }
+}

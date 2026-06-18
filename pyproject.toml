@@ -1,0 +1,103 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bollard-mcp"
+version = "0.1.0"
+description = "AI-powered, safe database access layer for MCP clients (Cursor, VS Code, Claude Desktop)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "AGPL-3.0-only" }
+authors = [{ name = "Bollard" }]
+keywords = ["mcp", "database", "ai", "cursor", "vscode", "postgresql", "mysql", "sqlite"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Topic :: Database",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    # MCP server framework
+    "fastmcp>=2.0.0",
+    # Database abstraction (covers PostgreSQL, MySQL, SQLite, MSSQL, Oracle)
+    "sqlalchemy>=2.0.0",
+    # Async database drivers
+    "asyncpg>=0.29.0",          # PostgreSQL (async)
+    "aiomysql>=0.2.0",          # MySQL (async)
+    "aiosqlite>=0.20.0",        # SQLite (async)
+    # Sync drivers (for SQLAlchemy schema introspection)
+    "psycopg2-binary>=2.9.0",   # PostgreSQL (sync)
+    "pymysql>=1.1.0",           # MySQL (sync)
+    # SQL parsing for safety pipeline + intent analysis
+    "sqlglot>=25.0.0",
+    # Credential storage
+    "keyring>=25.0.0",
+    "cryptography>=42.0.0",      # Fernet AES-256 fallback
+    # Result formatting
+    "tabulate>=0.9.0",
+    # Utilities
+    "pydantic>=2.0.0",           # Settings + data models
+    "pydantic-settings>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "platformdirs>=4.0.0",       # Cross-platform ~/.bollard path
+    "anyio>=4.0.0",              # Async compatibility
+]
+
+[project.optional-dependencies]
+mongodb = [
+    "pymongo>=4.7.0",
+    "motor>=3.4.0",              # Async MongoDB
+]
+ai = [
+    "anthropic>=0.25.0",
+    "httpx>=0.27.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
+]
+
+[project.scripts]
+bollard-mcp = "bollard_mcp.server:main"
+
+[project.urls]
+Homepage = "https://github.com/Bollard-db/Bollard"
+Documentation = "https://bollard.pavak.me/docs"
+Repository = "https://github.com/Bollard-db/Bollard"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bollard_mcp"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.venv",
+  "/docs",
+  "/vscode-extension",
+  "/*.db",
+  "/*.csv",
+  "/*.log",
+  "/dist"
+]
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
