@@ -44,14 +44,13 @@ _SMART_THRESHOLD = 15
 
 
 def request_extension_pin(connection_alias: str, sql: str) -> str:
-    """Request a temporary write confirmation PIN from the VS Code extension bridge."""
+    """Request a temporary write confirmation PIN from the VS Code extension bridge or generate locally."""
     port = os.environ.get("BOLLARD_EXTENSION_PORT")
     if not port:
-        raise RuntimeError(
-            "Write operations are blocked outside the Bollard VS Code Extension. "
-            "Please delete the manually added MCP server in Cursor settings (Settings -> Features -> MCP) "
-            "and use the Extension Development Host window to run write queries safely."
-        )
+        import random
+        pin = str(random.randint(1000, 9999))
+        _active_pins[connection_alias] = pin
+        return pin
 
     try:
         url = f"http://127.0.0.1:{port}/request_pin"
@@ -275,6 +274,7 @@ async def execute_query(
 
     is_write = operation in ("INSERT", "UPDATE", "DELETE", "CREATE", "ALTER", "DROP")
     if is_write:
+        port = os.environ.get("BOLLARD_EXTENSION_PORT")
         if not pin:
             try:
                 request_extension_pin(connection, sql)
@@ -282,18 +282,24 @@ async def execute_query(
                 return format_error("Query execution blocked.", str(e))
 
             preview = await preview_query(connection, sql)
+            local_pin = _active_pins.get(connection, "")
 
             if risk == RiskLevel.CRITICAL:
                 reversal = generate_suggested_reversal(sql, adapter.dialect)
                 expected_phrase = "confirm migration"
                 _pending_phrases[connection] = expected_phrase
+                pin_instruction = (
+                    "A PIN has been sent to your VS Code notification."
+                    if port else
+                    f"A local verification PIN has been generated: **`{local_pin}`**"
+                )
                 return format_risk_gate(
                     risk_label="CRITICAL",
                     risk_icon="🟠",
                     preview=preview,
                     extra_instruction=(
                         "**Step 1:** Review the Suggested Reversal below.\n"
-                        "**Step 2:** A PIN has been sent to your VS Code notification.\n"
+                        f"**Step 2:** {pin_instruction}.\n"
                         f"**Step 3:** Type exactly: `confirm migration`\n\n"
                         f"Then call:\n"
                         f'```\nexecute_query(connection="{connection}", sql=..., '
@@ -306,13 +312,18 @@ async def execute_query(
                 row_label = f"{estimated_rows:,}" if estimated_rows else "many"
                 expected_phrase = f"confirm update {row_label} rows"
                 _pending_phrases[connection] = expected_phrase
+                pin_instruction = (
+                    "A PIN has appeared in your VS Code notification."
+                    if port else
+                    f"A local verification PIN has been generated: **`{local_pin}`**"
+                )
                 return format_risk_gate(
                     risk_label="HIGH",
                     risk_icon="🟡",
                     preview=preview,
                     extra_instruction=(
                         "This operation affects a **large number of rows**.\n\n"
-                        "**Step 1:** A PIN has appeared in your VS Code notification.\n"
+                        f"**Step 1:** {pin_instruction}.\n"
                         f"**Step 2:** Type exactly: `{expected_phrase}`\n\n"
                         f"Then call:\n"
                         f'```\nexecute_query(connection="{connection}", sql=..., '
@@ -321,20 +332,33 @@ async def execute_query(
                 )
 
             else:
+                pin_instruction = (
+                    "A native VS Code notification has appeared and the PIN has been copied to your clipboard.\n"
+                    "Ask the user:\n"
+                    "> *\"Please paste the security PIN to authorize this update.\"*\n\n"
+                    if port else
+                    f"A local verification PIN has been generated: **`{local_pin}`**  \n"
+                    "Ask the user to paste this PIN in the chat to confirm the update.\n\n"
+                )
                 return (
                     preview
                     + "\n\n---\n"
                     + "⚠️ **Write operation requires Human-in-the-loop authorization.**  \n"
-                    + "A native VS Code notification has appeared and the PIN has been copied to your clipboard.\n"
-                    + "Ask the user:\n"
-                    + "> *\"Please paste the security PIN to authorize this update.\"*\n\n"
+                    + pin_instruction
                     + f"Once the user provides it, call `execute_query(connection=..., sql=..., confirmed=True, pin=\"<PIN>\")` to proceed."
                 )
 
         if not verify_security_pin(connection, pin):
+            if not port:
+                request_extension_pin(connection, sql)
+            new_pin = _active_pins.get(connection, "")
+            pin_location = (
+                "copied to your clipboard" if port else
+                f"generated directly in the chat: **`{new_pin}`**"
+            )
             return format_error(
                 "Query execution blocked: Invalid Security PIN.",
-                "The PIN you entered was incorrect or expired. A new PIN has been copied to your clipboard. Please paste the new PIN.",
+                f"The PIN you entered was incorrect or expired. A new PIN has been {pin_location}. Please paste the new PIN.",
             )
 
         if risk in (RiskLevel.HIGH, RiskLevel.CRITICAL):

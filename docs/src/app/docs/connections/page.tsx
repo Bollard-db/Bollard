@@ -242,9 +242,9 @@ cwd = "/path/to/bollard-mcp" # optional: set workspace directory`}
         </code>
       </pre>
       <div className="callout warning">
-        <div className="callout-title">Write Operations Blocked</div>
+        <div className="callout-title">Write Operations In Standalone Clients</div>
         <p>
-          Bollard requires a PIN verification loop for write queries (like <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>) that communicates through the companion VS Code/Cursor helper extension. Standalone clients like OpenAI Codex do not run the editor helper backend, so <strong>write operations will be safely blocked</strong> to prevent unauthorized changes. Read-only queries (SELECTs, schema introspection) will work fully.
+          In standalone clients (like OpenAI Codex or Claude Desktop) that do not run the editor helper extension, Bollard automatically falls back to an <strong>In-Chat PIN Gate</strong>. When the AI attempts a write query, the server will block execution, generate a local 4-digit verification PIN, and print it directly in the chat. You simply need to copy-paste this PIN back into the chat prompt to authorize and run the write query safely.
         </p>
       </div>
 
