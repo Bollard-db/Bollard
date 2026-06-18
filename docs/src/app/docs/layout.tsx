@@ -11,8 +11,13 @@ export default function DocsLayout({
 }) {
   const pathname = usePathname();
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
   const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [pathname]);
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -407,6 +412,19 @@ export default function DocsLayout({
     <div className="layout-wrapper">
       {/* Navigation Header */}
       <header className="header">
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          aria-label="Toggle menu"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            {isSidebarOpen ? (
+              <path d="M18 6 6 18M6 6l12 12" />
+            ) : (
+              <path d="M4 12h16M4 6h16M4 18h16" />
+            )}
+          </svg>
+        </button>
         <Link href="/" className="logo-section">
           <img
             src="/images/bollard_final_logo.png"
@@ -487,8 +505,11 @@ export default function DocsLayout({
       )}
 
       <div className="main-content">
+        {isSidebarOpen && (
+          <div className="sidebar-backdrop" onClick={() => setIsSidebarOpen(false)} />
+        )}
         {/* Sidebar Navigation */}
-        <aside className="sidebar">
+        <aside className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
           {menuItems.map((cat, idx) => (
             <div key={idx} className="sidebar-category">
               <h4 className="sidebar-title">{cat.category}</h4>

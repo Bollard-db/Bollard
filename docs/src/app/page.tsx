@@ -83,7 +83,7 @@ export default function Home() {
                 <span className="prompt">$</span> pip install bollard-mcp
               </div>
               <div className="line success-line">
-                Installed bollard-mcp v0.1.0 successfully.
+                Installed bollard-mcp v0.1.2 successfully.
               </div>
               <div className="line command">
                 <span className="prompt">$</span> bollard-mcp run --db neon
