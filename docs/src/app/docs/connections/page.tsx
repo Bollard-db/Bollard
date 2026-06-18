@@ -150,7 +150,7 @@ pip install -e .`}
       <ol>
         <li>Open the VS Code Command Palette (<code>Ctrl+Shift+P</code> or <code>Cmd+Shift+P</code>).</li>
         <li>Search for and select <strong>MCP: Open User Configuration</strong>.</li>
-        <li>Add the server configuration under the <code>"servers"</code> key:</li>
+        <li>If the configuration file is empty, paste the full JSON below. If you already have other servers configured, add the <code>"bollard"</code> block inside your existing <code>"servers"</code> object:</li>
       </ol>
       <pre>
         <code>
@@ -171,7 +171,7 @@ pip install -e .`}
       <ol>
         <li>Create a folder named <code>.vscode</code> at the root of your project workspace.</li>
         <li>Create a file named <code>mcp.json</code> inside it (i.e. <code>.vscode/mcp.json</code>).</li>
-        <li>Add the server configuration under the <code>"servers"</code> key:</li>
+        <li>If this is a new configuration file, paste the full JSON below. If you already have other servers configured, add the <code>"bollard"</code> block inside your existing <code>"servers"</code> object:</li>
       </ol>
       <pre>
         <code>
@@ -271,6 +271,21 @@ pip install -e .`}
 }`}
         </code>
       </pre>
+
+      <div className="callout danger">
+        <div className="callout-title">Troubleshooting: Connection state: Error spawn bollard-mcp ENOENT</div>
+        <p>
+          If you check your IDE's MCP logs and see a <code>Connection state: Error spawn bollard-mcp ENOENT</code> error, it means your editor cannot find the <code>bollard-mcp</code> executable in your system's PATH.
+        </p>
+        <p style={{ marginTop: "10px" }}>
+          <strong>How to fix:</strong>
+        </p>
+        <ol style={{ marginTop: "5px", marginBottom: "5px" }}>
+          <li>Open your terminal and run <code>where bollard-mcp</code> (on Windows) or <code>which bollard-mcp</code> (on macOS/Linux).</li>
+          <li>Copy the returned absolute path to the executable.</li>
+          <li>Replace <code>"command": "bollard-mcp"</code> with the full path in your configuration JSON (for example, <code>"C:\\\\Users\\\\username\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python310\\\\Scripts\\\\bollard-mcp.exe"</code> on Windows, or <code>"/home/username/.local/bin/bollard-mcp"</code> on Linux).</li>
+        </ol>
+      </div>
 
       <h3 id="openai-codex">OpenAI Codex</h3>
       <p>
