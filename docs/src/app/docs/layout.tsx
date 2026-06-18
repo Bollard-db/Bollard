@@ -70,6 +70,13 @@ export default function DocsLayout({
       keywords: ["setup", "installation", "configuration", "mcpServers", "env", "cursor", "vscode", "cline", "windsurf", "claude", "editor", "ide", "openai", "codex", "docker", "local"]
     },
     {
+      title: "GitHub Copilot Setup",
+      href: "/docs/connections#github-copilot",
+      category: "Getting Started",
+      description: "How to configure and register Bollard MCP with GitHub Copilot Chat in VS Code using mcp.json.",
+      keywords: ["github", "copilot", "chat", "mcp.json", "setup", "register", "vscode", "servers"]
+    },
+    {
       title: "OpenAI Codex Integration",
       href: "/docs/connections#openai-codex",
       category: "Getting Started",
@@ -353,6 +360,7 @@ export default function DocsLayout({
     "/docs/connections": [
       { title: "Installation", href: "#installation" },
       { title: "Configuring the Editor", href: "#configuring-the-editor" },
+      { title: "GitHub Copilot", href: "#github-copilot" },
       { title: "Environment Variables", href: "#environment-variables" },
       { title: "PgBouncer & Poolers", href: "#pgbouncer-and-poolers" },
       { title: "Connection String Examples", href: "#connection-string-examples" },

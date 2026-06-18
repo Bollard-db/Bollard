@@ -141,6 +141,53 @@ pip install -e .`}
         </div>
       </div>
 
+      <h3 id="github-copilot">GitHub Copilot (VS Code)</h3>
+      <p>
+        To configure Bollard with <strong>GitHub Copilot Chat</strong> in VS Code, you can set up the <code>mcp.json</code> file structure either globally or locally for your workspace. Note that Copilot expects the top-level key to be <code>"servers"</code> instead of <code>"mcpServers"</code>.
+      </p>
+
+      <h4>Option A: Global User Setup (All projects)</h4>
+      <ol>
+        <li>Open the VS Code Command Palette (<code>Ctrl+Shift+P</code> or <code>Cmd+Shift+P</code>).</li>
+        <li>Search for and select <strong>MCP: Open User Configuration</strong>.</li>
+        <li>Add the server configuration under the <code>"servers"</code> key:</li>
+      </ol>
+      <pre>
+        <code>
+          {`{
+  "servers": {
+    "bollard": {
+      "command": "bollard-mcp",
+      "env": {
+        "BOLLARD_DEBUG": "false"
+      }
+    }
+  }
+}`}
+        </code>
+      </pre>
+
+      <h4>Option B: Local Workspace Setup (This project only)</h4>
+      <ol>
+        <li>Create a folder named <code>.vscode</code> at the root of your project workspace.</li>
+        <li>Create a file named <code>mcp.json</code> inside it (i.e. <code>.vscode/mcp.json</code>).</li>
+        <li>Add the server configuration under the <code>"servers"</code> key:</li>
+      </ol>
+      <pre>
+        <code>
+          {`{
+  "servers": {
+    "bollard": {
+      "command": "bollard-mcp",
+      "env": {
+        "BOLLARD_DEBUG": "false"
+      }
+    }
+  }
+}`}
+        </code>
+      </pre>
+
       <h3>VS Code (with Cline / Roo Code / Claude Dev)</h3>
       <p>
         To use Bollard with Claude/Roo agents in <strong>VS Code</strong> using the <strong>Cline</strong> extension:
