@@ -359,6 +359,7 @@ export default function DocsLayout({
     ],
     "/docs/safety": [
       { title: "Threat Vector Model", href: "#threat-vector-model" },
+      { title: "Permission Modes", href: "#permission-modes" },
       { title: "Risk Level Matrix", href: "#risk-level-matrix" },
       { title: "Static AST Verification", href: "#static-ast-verification" },
       { title: "EXPLAIN Plan Analysis", href: "#explain-plan-analysis" },

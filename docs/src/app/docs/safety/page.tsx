@@ -8,6 +8,22 @@ export default function SafetyDocsPage() {
         Rather than blocking write queries outright or allowing dangerous updates blindly, Bollard scores the threat vector of every SQL command dynamically. It determines a risk level from LOW to EXTREME and applies a proportionate amount of friction.
       </p>
 
+      <h2 id="permission-modes">Connection Permission Modes</h2>
+      <p>
+        Every database connection registered in Bollard gets assigned a permission profile at connect time. This profile dictates the baseline authorization limits enforced before the Dynamic Risk Engine evaluates individual query risk levels.
+      </p>
+      <ul>
+        <li>
+          <strong><code>read_only</code> (Default)</strong>: The safest mode. Restricts client AI access strictly to <code>SELECT</code> and <code>EXPLAIN</code> queries. Any database writes, schema updates, or administrative queries are blocked immediately at the validator level.
+        </li>
+        <li>
+          <strong><code>read_write</code></strong>: Allows both read and write operations (<code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>). However, all DML writes are intercepted and gated by the Human-in-the-Loop PIN verification system to prevent silent or bulk updates. Destructive DDL commands (like <code>DROP</code> or <code>TRUNCATE</code>) remain blocked.
+        </li>
+        <li>
+          <strong><code>admin</code></strong>: Unrestricted access designed for migrations and schema setup. Enables administrative commands (like <code>DROP TABLE</code>, <code>TRUNCATE</code>, and index operations) but routes them through the PIN and confirmation phrase verification gates instead of rejecting them outright.
+        </li>
+      </ul>
+
       <h2 id="risk-level-matrix">Risk Level Matrix</h2>
       <p>
         The threat scoring framework is computed in a three-stage validation pipeline: <strong>AST parsing</strong> (verifies statement architecture), <strong>EXPLAIN plan checking</strong> (retrieves database cost metrics), and <strong>schema policies</strong> (detects sensitive tables).
